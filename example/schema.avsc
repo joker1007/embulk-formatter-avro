@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "Item",
+  "namespace" : "example.avro",
+  "fields" : [
+    {"name": "id", "type": "long"},
+    {"name": "account", "type": "long"},
+    {"name": "time", "type": "string"},
+    {"name": "purchase", "type": "string"},
+    {"name": "comment", "type": ["string", "null"]},
+    {"name": "data", "type": ["string", "null"]}
+  ]
+}
