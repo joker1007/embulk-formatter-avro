@@ -1,23 +1,30 @@
 package org.embulk.formatter.avro;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericRecordBuilder;
+import org.embulk.formatter.avro.converter.AbstractAvroValueConverter;
 import org.embulk.spi.Column;
 import org.embulk.spi.ColumnVisitor;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.embulk.spi.time.TimestampFormatter;
+import org.msgpack.value.ArrayValue;
+import org.msgpack.value.Value;
 
 public class AvroFormatterColumnVisitor implements ColumnVisitor {
     private PageReader pageReader;
     private TimestampFormatter[] timestampFormatters;
+    private AbstractAvroValueConverter[] avroValueConverters;
     private GenericRecord record;
     private org.apache.avro.Schema avroSchema;
 
-    AvroFormatterColumnVisitor(PageReader pageReader, TimestampFormatter[] timestampFormatters, org.apache.avro.Schema avroSchema, GenericRecord record) {
+    AvroFormatterColumnVisitor(PageReader pageReader, TimestampFormatter[] timestampFormatters, AbstractAvroValueConverter[] avroValueConverters, GenericRecord record) {
         this.pageReader = pageReader;
         this.timestampFormatters = timestampFormatters;
-        this.avroSchema = avroSchema;
+        this.avroValueConverters = avroValueConverters;
         this.record = record;
     }
 
@@ -25,59 +32,72 @@ public class AvroFormatterColumnVisitor implements ColumnVisitor {
     public void booleanColumn(Column column) {
         if (pageReader.isNull(column))
             return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
         Boolean value = pageReader.getBoolean(column);
-        record.put(column.getName(), value);
+        Object result = converter.booleanColumn(value);
+        record.put(column.getName(), result);
     }
 
     @Override
     public void longColumn(Column column) {
         if (pageReader.isNull(column))
             return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
         Long value = pageReader.getLong(column);
-        record.put(column.getName(), value);
+        Object result = converter.longColumn(value);
+        record.put(column.getName(), result);
     }
 
     @Override
     public void doubleColumn(Column column) {
         if (pageReader.isNull(column))
             return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
         Double value = pageReader.getDouble(column);
-        record.put(column.getName(), value);
+        Object result = converter.doubleColumn(value);
+        record.put(column.getName(), result);
     }
 
     @Override
     public void stringColumn(Column column) {
         if (pageReader.isNull(column))
             return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
         String value = pageReader.getString(column);
-        System.out.println(value);
-        record.put(column.getName(), value);
+        Object result = converter.stringColumn(value);
+        record.put(column.getName(), result);
     }
 
     @Override
     public void timestampColumn(Column column) {
         if (pageReader.isNull(column))
             return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
         Timestamp value = pageReader.getTimestamp(column);
         String formatted = timestampFormatters[column.getIndex()].format(value);
-        org.apache.avro.Schema.Type avroType = avroSchema.getField(column.getName()).schema().getType();
-        switch (avroType) {
-            case STRING:
-                record.put(column.getName(), formatted);
-                break;
-            case INT:
-                record.put(column.getName(), Integer.parseInt(formatted));
-            case LONG:
-                record.put(column.getName(), Long.parseLong(formatted));
-            case FLOAT:
-            case DOUBLE:
-                record.put(column.getName(), Double.parseDouble(formatted));
-            default:
-                throw new RuntimeException("Unsupported type");
-        }
+        Object result = converter.timestampColumn(formatted);
+        record.put(column.getName(), result);
     }
 
     @Override
     public void jsonColumn(Column column) {
+        if (pageReader.isNull(column))
+            return;
+        AbstractAvroValueConverter converter = avroValueConverters[column.getIndex()];
+        if (converter == null)
+            return;
+        Value value = pageReader.getJson(column);
+        Object result = converter.jsonColumn(value);
+        record.put(column.getName(), result);
     }
 }

@@ -16,6 +16,8 @@ import org.embulk.config.ConfigInject;
 import org.embulk.config.ConfigSource;
 import org.embulk.config.Task;
 import org.embulk.config.TaskSource;
+import org.embulk.formatter.avro.converter.AbstractAvroValueConverter;
+import org.embulk.formatter.avro.converter.AvroValueConverterFactory;
 import org.embulk.spi.BufferAllocator;
 import org.embulk.spi.Column;
 import org.embulk.spi.ColumnVisitor;
@@ -34,6 +36,8 @@ import org.msgpack.value.Value;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AvroFormatterPlugin
@@ -99,6 +103,15 @@ public class AvroFormatterPlugin
             throw new ConfigException("avsc file is not found");
         }
 
+        final AbstractAvroValueConverter[] avroValueConverters = new AbstractAvroValueConverter[schema.size()];
+        List<AbstractAvroValueConverter> array = new ArrayList<>();
+        for (Column c : schema.getColumns()) {
+            org.apache.avro.Schema.Field field = avroSchema.getField(c.getName());
+            if (field != null) {
+                avroValueConverters[c.getIndex()] = AvroValueConverterFactory.createConverter(field);
+            }
+        }
+
         return new PageOutput() {
             private final PageReader pageReader = new PageReader(schema);
 
@@ -109,10 +122,9 @@ public class AvroFormatterPlugin
                 while (pageReader.nextRecord()) {
                     GenericRecord record = new GenericData.Record(avroSchema);
 
-                    schema.visitColumns(new AvroFormatterColumnVisitor(pageReader, timestampFormatters, avroSchema, record));
+                    schema.visitColumns(new AvroFormatterColumnVisitor(pageReader, timestampFormatters, avroValueConverters, record));
 
                     try {
-                        System.out.println(record);
                         writer.append(record);
                     } catch (IOException e) {
                         e.printStackTrace();
