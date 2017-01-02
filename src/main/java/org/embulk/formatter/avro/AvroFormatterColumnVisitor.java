@@ -14,7 +14,6 @@ public class AvroFormatterColumnVisitor implements ColumnVisitor {
     private TimestampFormatter[] timestampFormatters;
     private AbstractAvroValueConverter[] avroValueConverters;
     private GenericRecord record;
-    private org.apache.avro.Schema avroSchema;
 
     AvroFormatterColumnVisitor(PageReader pageReader, TimestampFormatter[] timestampFormatters, AbstractAvroValueConverter[] avroValueConverters, GenericRecord record) {
         this.pageReader = pageReader;
