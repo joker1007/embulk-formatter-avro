@@ -1,6 +1,12 @@
 package org.embulk.formatter.avro.converter;
 
+import org.apache.avro.Schema;
+
 public class AvroLongConverter extends AbstractAvroValueConverter {
+    public AvroLongConverter(Schema schema) {
+        super(schema);
+    }
+
     @Override
     public Long longColumn(long value) {
         return value;

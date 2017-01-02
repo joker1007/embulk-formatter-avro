@@ -12,19 +12,19 @@ public class AvroValueConverterFactory {
         Schema.Type avroType = schema.getType();
         switch (avroType) {
             case NULL:
-                return new AvroNullConverter();
+                return new AvroNullConverter(schema);
             case BOOLEAN:
-                return new AvroBooleanConverter();
+                return new AvroBooleanConverter(schema);
             case STRING:
-                return new AvroStringConverter();
+                return new AvroStringConverter(schema);
             case INT:
-                return new AvroIntConverter();
+                return new AvroIntConverter(schema);
             case LONG:
-                return new AvroLongConverter();
+                return new AvroLongConverter(schema);
             case FLOAT:
-                return new AvroFloatConverter();
+                return new AvroFloatConverter(schema);
             case DOUBLE:
-                return new AvroDoubleConverter();
+                return new AvroDoubleConverter(schema);
             case ENUM:
                 return new AvroEnumConverter(schema, schema.getEnumSymbols());
             case FIXED:
@@ -34,11 +34,11 @@ public class AvroValueConverterFactory {
                     if (s.getType() != Schema.Type.NULL)
                         return detectConverter(s);
                 }
-                return new AvroNullConverter();
+                return new AvroNullConverter(schema);
             case ARRAY:
                 return new AvroArrayConverter(schema, detectConverter(schema.getElementType()));
             case MAP:
-                return new AvroMapConverter(detectConverter(schema.getValueType()));
+                return new AvroMapConverter(schema, detectConverter(schema.getValueType()));
             case RECORD:
                 ImmutableMap.Builder<String, AbstractAvroValueConverter> builder = ImmutableMap.builder();
                 for (Schema.Field f : schema.getFields()) {
@@ -46,7 +46,7 @@ public class AvroValueConverterFactory {
                 }
                 return new AvroRecordConverter(schema, builder.build());
             default:
-                throw new RuntimeException("Unsupported avro type");
+                throw new RuntimeException(String.format("%s of %s is unsupported avro type", schema.getType(), schema.getName()));
         }
     }
 }

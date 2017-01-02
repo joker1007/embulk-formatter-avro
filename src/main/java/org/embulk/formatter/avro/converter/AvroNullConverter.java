@@ -1,8 +1,13 @@
 package org.embulk.formatter.avro.converter;
 
+import org.apache.avro.Schema;
 import org.msgpack.value.Value;
 
 public class AvroNullConverter extends AbstractAvroValueConverter {
+    public AvroNullConverter(Schema schema) {
+        super(schema);
+    }
+
     @Override
     public Object booleanColumn(boolean value) {
         return null;

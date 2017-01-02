@@ -1,17 +1,12 @@
 package org.embulk.formatter.avro;
 
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericArray;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.generic.GenericRecordBuilder;
 import org.embulk.formatter.avro.converter.AbstractAvroValueConverter;
 import org.embulk.spi.Column;
 import org.embulk.spi.ColumnVisitor;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.embulk.spi.time.TimestampFormatter;
-import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
 
 public class AvroFormatterColumnVisitor implements ColumnVisitor {

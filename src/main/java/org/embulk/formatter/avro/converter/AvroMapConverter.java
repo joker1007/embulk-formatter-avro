@@ -2,17 +2,15 @@ package org.embulk.formatter.avro.converter;
 
 import avro.shaded.com.google.common.collect.ImmutableMap;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericArray;
-import org.apache.avro.generic.GenericData;
 import org.msgpack.value.Value;
 
-import java.util.List;
 import java.util.Map;
 
 public class AvroMapConverter extends AbstractAvroValueConverter {
     private AbstractAvroValueConverter elementConverter;
 
-    public AvroMapConverter(AbstractAvroValueConverter elementConverter) {
+    public AvroMapConverter(Schema schema, AbstractAvroValueConverter elementConverter) {
+        super(schema);
         this.elementConverter = elementConverter;
     }
 

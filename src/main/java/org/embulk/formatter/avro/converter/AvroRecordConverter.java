@@ -3,19 +3,16 @@ package org.embulk.formatter.avro.converter;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
 
 import java.util.Map;
-import java.util.Set;
 
 public class AvroRecordConverter extends AbstractAvroValueConverter {
-    private Schema avroSchema;
     private Map<String, AbstractAvroValueConverter> converterTable;
 
     public AvroRecordConverter(Schema schema, Map<String, AbstractAvroValueConverter> converterTable) {
-        this.avroSchema = schema;
+        super(schema);
         this.converterTable = converterTable;
     }
 

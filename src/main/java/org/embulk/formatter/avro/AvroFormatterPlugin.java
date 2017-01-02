@@ -1,16 +1,11 @@
 package org.embulk.formatter.avro;
 
-import com.google.common.base.Optional;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.EncoderFactory;
 import org.embulk.config.Config;
 import org.embulk.config.ConfigDefault;
-import org.embulk.config.ConfigDiff;
 import org.embulk.config.ConfigException;
 import org.embulk.config.ConfigInject;
 import org.embulk.config.ConfigSource;
@@ -20,19 +15,16 @@ import org.embulk.formatter.avro.converter.AbstractAvroValueConverter;
 import org.embulk.formatter.avro.converter.AvroValueConverterFactory;
 import org.embulk.spi.BufferAllocator;
 import org.embulk.spi.Column;
-import org.embulk.spi.ColumnVisitor;
+import org.embulk.spi.FileOutput;
 import org.embulk.spi.FormatterPlugin;
 import org.embulk.spi.Page;
 import org.embulk.spi.PageOutput;
-import org.embulk.spi.FileOutput;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.Schema;
-import org.embulk.spi.time.Timestamp;
 import org.embulk.spi.time.TimestampFormatter;
 import org.embulk.spi.unit.LocalFile;
 import org.embulk.spi.util.FileOutputOutputStream;
 import org.embulk.spi.util.Timestamps;
-import org.msgpack.value.Value;
 
 import java.io.File;
 import java.io.IOException;
