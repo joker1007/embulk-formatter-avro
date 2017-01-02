@@ -47,10 +47,10 @@ public class AvroRecordConverter extends AbstractAvroValueConverter {
                         record.put(entry.getKey(), entry.getValue().booleanColumn(child.asBooleanValue().getBoolean()));
                         break;
                     case ARRAY:
-                        record.put(entry.getKey(), entry.getValue().stringColumn(child.asArrayValue().toJson()));
+                        record.put(entry.getKey(), entry.getValue().jsonColumn(child.asArrayValue()));
                         break;
                     case MAP:
-                        record.put(entry.getKey(), entry.getValue().stringColumn(child.asMapValue().toJson()));
+                        record.put(entry.getKey(), entry.getValue().jsonColumn(child.asMapValue()));
                         break;
                     default:
                         throw new RuntimeException("Irregular Messagepack type");

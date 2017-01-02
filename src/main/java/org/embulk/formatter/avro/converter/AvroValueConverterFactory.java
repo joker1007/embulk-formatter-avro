@@ -27,6 +27,8 @@ public class AvroValueConverterFactory {
                         return detectConverter(s, field);
                 }
                 return new AvroNullConverter();
+            case ARRAY:
+                return new AvroArrayConverter(schema, detectConverter(schema.getElementType(), field));
             case RECORD:
                 ImmutableMap.Builder<String, AbstractAvroValueConverter> builder = ImmutableMap.builder();
                 for (Schema.Field f : schema.getFields()) {
