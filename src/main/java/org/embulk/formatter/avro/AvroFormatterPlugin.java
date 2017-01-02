@@ -15,6 +15,7 @@ import org.embulk.formatter.avro.converter.AbstractAvroValueConverter;
 import org.embulk.formatter.avro.converter.AvroValueConverterFactory;
 import org.embulk.spi.BufferAllocator;
 import org.embulk.spi.Column;
+import org.embulk.spi.Exec;
 import org.embulk.spi.FileOutput;
 import org.embulk.spi.FormatterPlugin;
 import org.embulk.spi.Page;
@@ -25,6 +26,7 @@ import org.embulk.spi.time.TimestampFormatter;
 import org.embulk.spi.unit.LocalFile;
 import org.embulk.spi.util.FileOutputOutputStream;
 import org.embulk.spi.util.Timestamps;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,13 +40,16 @@ public class AvroFormatterPlugin
     public interface PluginTask
             extends Task, TimestampFormatter.Task
     {
-        // configuration option 1 (required integer)
         @Config("avsc")
         LocalFile getAvsc();
 
         @Config("column_options")
         @ConfigDefault("{}")
         Map<String, TimestampFormatter.TimestampColumnOption> getColumnOptions();
+
+        @Config("skip_error_record")
+        @ConfigDefault("false")
+        Boolean getSkipErrorRecord();
 
         @ConfigInject
         public BufferAllocator getBufferAllocator();
@@ -73,12 +78,15 @@ public class AvroFormatterPlugin
         control.run(task.dump());
     }
 
+    final Logger logger = Exec.getLogger(this.getClass());
+
     @Override
     public PageOutput open(TaskSource taskSource, final Schema schema,
             FileOutput output)
     {
         PluginTask task = taskSource.loadTask(PluginTask.class);
 
+        final Boolean skipErrorRecord = task.getSkipErrorRecord();
         final TimestampFormatter[] timestampFormatters = Timestamps.newTimestampColumnFormatters(task, schema, task.getColumnOptions());
         final FileOutputOutputStream stream = new FileOutputOutputStream(output, task.getBufferAllocator(), FileOutputOutputStream.CloseMode.CLOSE);
 
@@ -114,10 +122,27 @@ public class AvroFormatterPlugin
                 while (pageReader.nextRecord()) {
                     GenericRecord record = new GenericData.Record(avroSchema);
 
-                    schema.visitColumns(new AvroFormatterColumnVisitor(pageReader, timestampFormatters, avroValueConverters, record));
+                    try {
+                        schema.visitColumns(new AvroFormatterColumnVisitor(pageReader, timestampFormatters, avroValueConverters, record));
+                    } catch (RuntimeException ex) {
+                        if (skipErrorRecord) {
+                            logger.warn(ex.getMessage());
+                            logger.warn(String.format("skip record: %s", record));
+                            continue;
+                        } else {
+                            throw ex;
+                        }
+                    }
 
                     try {
                         writer.append(record);
+                    } catch (RuntimeException ex) {
+                        if (skipErrorRecord) {
+                            logger.warn(ex.getMessage());
+                            logger.warn(String.format("skip record: %s", record));
+                        } else {
+                            throw ex;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException("failed to write");

@@ -31,3 +31,4 @@ out:
   formatter:
     type: avro
     avsc: schema.avsc
+    skip_error_record: true

@@ -3,3 +3,5 @@ id,account,time,purchase,comment,data,data2,type,md5
 2,14824,2015-01-27 19:01:23,20150127,embulk jruby,"{\"events\": [{\"id\": 1, \"name\": \"Name1\"}, {\"id\": 2, \"name\": \"Name2\"}]}","[]","B",NULL
 3,27559,2015-01-28 02:20:02,20150128,"Embulk ""csv"" parser plugin",NULL,"[]","C",8c3983ad4jsal42010325kld024954ll
 4,11270,2015-01-29 11:54:36,20150129,NULL,NULL,"[]","A",474a3bdb966b40c80acb069f73441f29
+4,11270,2015-01-29 11:54:36,20150129,NULL,NULL,"[]","D",NULL
+4,11270,2015-01-29 11:54:36,20150129,NULL,NULL,NULL,"A",NULL
