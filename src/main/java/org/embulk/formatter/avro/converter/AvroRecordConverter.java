@@ -28,24 +28,35 @@ public class AvroRecordConverter extends AbstractAvroValueConverter {
 
         GenericRecord record = new GenericData.Record(recordSchema);
         for (Map.Entry<String, AbstractAvroValueConverter> entry : converterTable.entrySet()) {
-            Value child = map.get(ValueFactory.newString(entry.getKey()));
-            switch (child.getValueType()) {
-                case STRING:
-                    record.put(entry.getKey(), entry.getValue().stringColumn(child.asStringValue().toString()));
-                    break;
-                case INTEGER:
-                    record.put(entry.getKey(), entry.getValue().longColumn(child.asIntegerValue().toLong()));
-                    break;
-                case FLOAT:
-                    record.put(entry.getKey(), entry.getValue().doubleColumn(child.asFloatValue().toDouble()));
-                    break;
-                case BOOLEAN:
-                    record.put(entry.getKey(), entry.getValue().booleanColumn(child.asBooleanValue().getBoolean()));
-                    break;
-                default:
-                    throw new RuntimeException("Irregular Messagepack type");
+            Value key = ValueFactory.newString(entry.getKey());
+            if (!map.containsKey(key)) {
+                record.put(entry.getKey(), null);
+            } else {
+                Value child = map.get(ValueFactory.newString(entry.getKey()));
+                switch (child.getValueType()) {
+                    case STRING:
+                        record.put(entry.getKey(), entry.getValue().stringColumn(child.asStringValue().toString()));
+                        break;
+                    case INTEGER:
+                        record.put(entry.getKey(), entry.getValue().longColumn(child.asIntegerValue().toLong()));
+                        break;
+                    case FLOAT:
+                        record.put(entry.getKey(), entry.getValue().doubleColumn(child.asFloatValue().toDouble()));
+                        break;
+                    case BOOLEAN:
+                        record.put(entry.getKey(), entry.getValue().booleanColumn(child.asBooleanValue().getBoolean()));
+                        break;
+                    case ARRAY:
+                        record.put(entry.getKey(), entry.getValue().stringColumn(child.asArrayValue().toJson()));
+                        break;
+                    case MAP:
+                        record.put(entry.getKey(), entry.getValue().stringColumn(child.asMapValue().toJson()));
+                        break;
+                    default:
+                        throw new RuntimeException("Irregular Messagepack type");
+                }
             }
         }
-        return null;
+        return record;
     }
 }

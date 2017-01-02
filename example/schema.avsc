@@ -8,6 +8,15 @@
     {"name": "time", "type": "string"},
     {"name": "purchase", "type": "string"},
     {"name": "comment", "type": ["string", "null"]},
-    {"name": "data", "type": ["string", "null"]}
+    {"name": "data", "type": [
+      {
+        "type": "record",
+        "name": "data_record",
+        "fields": [
+          {"name": "foo", "type": ["null", "string"]},
+          {"name": "events", "type":  ["null", "string"]}
+        ]
+      }, "null"]
+    }
   ]
 }
