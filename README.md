@@ -6,6 +6,25 @@
 
 * **Plugin type**: formatter
 
+## Support avro types
+
+Support all avro basic types.
+
+- string
+- int
+- long
+- float
+- double
+- boolean
+- enum
+- fixed
+- array
+- map
+- record
+
+But typecasting is restricted by embulk column type.
+See. [AvroValueConverters](https://github.com/joker1007/embulk-formatter-avro/tree/master/src/main/java/org/embulk/formatter/avro/converter),
+
 ## Configuration
 
 - **avsc**: avro schema (avsc) filepath (string, required)
