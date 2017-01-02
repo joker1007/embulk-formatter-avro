@@ -17,6 +17,15 @@
           {"name": "events", "type":  ["null", {"type": "array", "items": {"type": "map", "values": "string"}}]}
         ]
       }, "null"]
-    }
+    },
+    {"name": "data2", "type": {
+      "type": "array", "items": {
+        "type": "record",
+        "name": "data2_record",
+        "fields": [
+          {"name": "hoge", "type": ["null", "int"]}
+        ]
+      }
+    }}
   ]
 }

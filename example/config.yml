@@ -20,6 +20,7 @@ in:
     - {name: purchase, type: timestamp, format: '%Y%m%d'}
     - {name: comment, type: string}
     - {name: data, type: json}
+    - {name: data2, type: json}
 
 out:
   type: file
