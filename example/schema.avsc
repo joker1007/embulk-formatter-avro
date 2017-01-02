@@ -14,7 +14,7 @@
         "name": "data_record",
         "fields": [
           {"name": "foo", "type": ["null", "string"]},
-          {"name": "events", "type":  ["null", {"type": "array", "items": "string"}]}
+          {"name": "events", "type":  ["null", {"type": "array", "items": {"type": "map", "values": "string"}}]}
         ]
       }, "null"]
     }
