@@ -81,7 +81,7 @@ Gem::Specification.new do |spec|
   spec.description   = %[Formats Avro files for other file output plugins.]
   spec.email         = ["kakyoin.hierophant@gmail.com"]
   spec.licenses      = ["MIT"]
-  # TODO set this: spec.homepage      = "https://github.com/kakyoin.hierophant/embulk-formatter-avro"
+  # TODO set this: spec.homepage      = "https://github.com/joker1007/embulk-formatter-avro"
 
   spec.files         = `git ls-files`.split("\n") + Dir["classpath/*.jar"]
   spec.test_files    = spec.files.grep(%r"^(test|spec)/")

@@ -1,6 +1,6 @@
 # Avro formatter plugin for Embulk
 
-TODO: Write short description here and build.gradle file.
+[Avro](http://avro.apache.org/) formatter plugin for Embulk.
 
 ## Overview
 
@@ -8,19 +8,20 @@ TODO: Write short description here and build.gradle file.
 
 ## Configuration
 
-- **option1**: description (integer, required)
-- **option2**: description (string, default: `"myvalue"`)
-- **option3**: description (string, default: `null`)
+- **avsc**: avro schema (avsc) filepath (string, required)
+- **skip\_error\_record**: If you want to skip error record, set true (boolean, default: `false`)
 
 ## Example
 
 ```yaml
 out:
-  type: any output input plugin type
+  type: file
+  path_prefix: ./out_
+  file_ext: avro
   formatter:
     type: avro
-    option1: example1
-    option2: example2
+    avsc: schema.avsc
+    skip_error_record: true
 ```
 
 
