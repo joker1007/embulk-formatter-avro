@@ -21,6 +21,8 @@ in:
     - {name: comment, type: string}
     - {name: data, type: json}
     - {name: data2, type: json}
+    - {name: type, type: string}
+    - {name: md5, type: string}
 
 out:
   type: file

@@ -25,6 +25,10 @@ public class AvroValueConverterFactory {
                 return new AvroFloatConverter();
             case DOUBLE:
                 return new AvroDoubleConverter();
+            case ENUM:
+                return new AvroEnumConverter(schema, schema.getEnumSymbols());
+            case FIXED:
+                return new AvroFixedConverter(schema);
             case UNION:
                 for (Schema s : schema.getTypes()) {
                     if (s.getType() != Schema.Type.NULL)

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public class AvroArrayConverter extends AbstractAvroValueConverter {
-    private Schema recordSchema;
+    private Schema avroSchema;
     private AbstractAvroValueConverter elementConverter;
 
-    public AvroArrayConverter(Schema recordSchema, AbstractAvroValueConverter elementConverter) {
-        this.recordSchema = recordSchema;
+    public AvroArrayConverter(Schema schema, AbstractAvroValueConverter elementConverter) {
+        this.avroSchema = schema;
         this.elementConverter = elementConverter;
     }
 
@@ -26,7 +26,7 @@ public class AvroArrayConverter extends AbstractAvroValueConverter {
 
         List<Value> list = value.asArrayValue().list();
 
-        GenericArray<Object> array = new GenericData.Array<>(list.size(), recordSchema);
+        GenericArray<Object> array = new GenericData.Array<>(list.size(), avroSchema);
         for (Value val : list) {
             switch (val.getValueType()) {
                 case STRING:

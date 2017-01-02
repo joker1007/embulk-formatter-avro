@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class AvroRecordConverter extends AbstractAvroValueConverter {
-    private Schema recordSchema;
+    private Schema avroSchema;
     private Map<String, AbstractAvroValueConverter> converterTable;
 
-    public AvroRecordConverter(Schema recordSchema, Map<String, AbstractAvroValueConverter> converterTable) {
-        this.recordSchema = recordSchema;
+    public AvroRecordConverter(Schema schema, Map<String, AbstractAvroValueConverter> converterTable) {
+        this.avroSchema = schema;
         this.converterTable = converterTable;
     }
 
@@ -26,7 +26,7 @@ public class AvroRecordConverter extends AbstractAvroValueConverter {
 
         Map<Value, Value> map = value.asMapValue().map();
 
-        GenericRecord record = new GenericData.Record(recordSchema);
+        GenericRecord record = new GenericData.Record(avroSchema);
         for (Map.Entry<String, AbstractAvroValueConverter> entry : converterTable.entrySet()) {
             Value key = ValueFactory.newString(entry.getKey());
             if (!map.containsKey(key)) {

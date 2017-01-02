@@ -1,5 +1,5 @@
-id,account,time,purchase,comment,data,data2
-1,32864,2015-01-27 19:23:49,20150127,embulk,"{\"foo\": \"bar\", \"events\": [{\"id\": 1, \"name\": \"Name1\"}, {\"id\": 2, \"name\": \"Name2\"}]}","[{\"hoge\": 1}]"
-2,14824,2015-01-27 19:01:23,20150127,embulk jruby,"{\"events\": [{\"id\": 1, \"name\": \"Name1\"}, {\"id\": 2, \"name\": \"Name2\"}]}","[]"
-3,27559,2015-01-28 02:20:02,20150128,"Embulk ""csv"" parser plugin",NULL,"[]"
-4,11270,2015-01-29 11:54:36,20150129,NULL,NULL,"[]"
+id,account,time,purchase,comment,data,data2,type,md5
+1,32864,2015-01-27 19:23:49,20150127,embulk,"{\"foo\": \"bar\", \"events\": [{\"id\": 1, \"name\": \"Name1\"}, {\"id\": 2, \"name\": \"Name2\"}]}","[{\"hoge\": 1}]","A",6c3983adda53b2136532dbd5b4d668b9
+2,14824,2015-01-27 19:01:23,20150127,embulk jruby,"{\"events\": [{\"id\": 1, \"name\": \"Name1\"}, {\"id\": 2, \"name\": \"Name2\"}]}","[]","B",NULL
+3,27559,2015-01-28 02:20:02,20150128,"Embulk ""csv"" parser plugin",NULL,"[]","C",8c3983ad4jsal42010325kld024954ll
+4,11270,2015-01-29 11:54:36,20150129,NULL,NULL,"[]","A",474a3bdb966b40c80acb069f73441f29
