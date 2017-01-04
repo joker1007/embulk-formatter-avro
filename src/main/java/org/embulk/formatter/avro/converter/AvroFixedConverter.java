@@ -5,7 +5,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericFixed;
 
 public class AvroFixedConverter extends AbstractAvroValueConverter {
-    AvroFixedConverter(Schema schema) {
+    public AvroFixedConverter(Schema schema) {
         super(schema);
     }
 

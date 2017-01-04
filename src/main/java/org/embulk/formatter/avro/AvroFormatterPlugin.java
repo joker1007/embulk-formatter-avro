@@ -30,8 +30,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class AvroFormatterPlugin
@@ -78,7 +76,7 @@ public class AvroFormatterPlugin
         control.run(task.dump());
     }
 
-    final Logger logger = Exec.getLogger(this.getClass());
+    private final Logger logger = Exec.getLogger(this.getClass());
 
     @Override
     public PageOutput open(TaskSource taskSource, final Schema schema,
@@ -104,7 +102,6 @@ public class AvroFormatterPlugin
         }
 
         final AbstractAvroValueConverter[] avroValueConverters = new AbstractAvroValueConverter[schema.size()];
-        List<AbstractAvroValueConverter> array = new ArrayList<>();
         for (Column c : schema.getColumns()) {
             org.apache.avro.Schema.Field field = avroSchema.getField(c.getName());
             if (field != null) {
@@ -124,17 +121,6 @@ public class AvroFormatterPlugin
 
                     try {
                         schema.visitColumns(new AvroFormatterColumnVisitor(pageReader, timestampFormatters, avroValueConverters, record));
-                    } catch (RuntimeException ex) {
-                        if (skipErrorRecord) {
-                            logger.warn(ex.getMessage());
-                            logger.warn(String.format("skip record: %s", record));
-                            continue;
-                        } else {
-                            throw ex;
-                        }
-                    }
-
-                    try {
                         writer.append(record);
                     } catch (RuntimeException ex) {
                         if (skipErrorRecord) {
