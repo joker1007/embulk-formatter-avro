@@ -1,5 +1,9 @@
 package org.embulk.formatter.avro;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.common.base.Optional;
+import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -30,6 +34,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 public class AvroFormatterPlugin
@@ -40,6 +45,14 @@ public class AvroFormatterPlugin
     {
         @Config("avsc")
         LocalFile getAvsc();
+
+        @Config("codec")
+        @ConfigDefault("null")
+        Optional<Codec> getCodec();
+
+        @Config("compression_level")
+        @ConfigDefault("null")
+        Optional<Integer> getCompressionLevel();
 
         @Config("column_options")
         @ConfigDefault("{}")
@@ -95,6 +108,7 @@ public class AvroFormatterPlugin
             avroSchema = new org.apache.avro.Schema.Parser().parse(avsc);
             GenericDatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>(avroSchema);
             writer = new DataFileWriter<>(datumWriter);
+            writer.setCodec(task.getCodec().or(Codec.NULL).getCodecFactory(task.getCompressionLevel()));
             stream.nextFile();
             writer.create(avroSchema, stream);
         } catch (IOException e) {
@@ -165,5 +179,57 @@ public class AvroFormatterPlugin
                 stream.close();
             }
         };
+    }
+
+    public enum Codec {
+        NULL {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.nullCodec();
+            }
+        },
+        DEFLATE {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.deflateCodec(compressionLevel.or(CodecFactory.DEFAULT_DEFLATE_LEVEL));
+            }
+        },
+        XZ {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.xzCodec(compressionLevel.or(CodecFactory.DEFAULT_XZ_LEVEL));
+            }
+        },
+        SNAPPY {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.snappyCodec();
+            }
+        },
+        BZIP2 {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.bzip2Codec();
+            }
+        };
+
+        @JsonValue
+        @Override
+        public String toString() {
+            return name().toLowerCase(Locale.ENGLISH);
+        }
+
+        abstract public CodecFactory getCodecFactory(Optional<Integer> compressionLevel);
+
+        @JsonCreator
+        public static Codec fromString(String name) {
+            switch (name) {
+                case "deflate":
+                    return DEFLATE;
+                case "xz":
+                    return XZ;
+                case "snappy":
+                    return SNAPPY;
+                case "bzip2":
+                    return BZIP2;
+                default:
+                    throw new ConfigException(String.format("Unknown mode '%s'. Supported modes are single_column, multi_column", name));
+            }
+        }
     }
 }

@@ -28,6 +28,8 @@ See. [AvroValueConverters](https://github.com/joker1007/embulk-formatter-avro/tr
 ## Configuration
 
 - **avsc**: avro schema (avsc) filepath (string, required)
+- **codec**: avro codec type (enum: `deflate`, `bzip2`, `xz`, `snappy`, optional)
+- **compression\_level**: avro codec compression level (integer, optional, for only `deflate` and `xz` codec)
 - **skip\_error\_record**: If you want to skip error record, set true (boolean, default: `false`)
 
 ## Example
