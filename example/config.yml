@@ -23,6 +23,7 @@ in:
     - {name: data2, type: json}
     - {name: type, type: string}
     - {name: md5, type: string}
+    - {name: flag, type: boolean}
 
 out:
   type: file

@@ -28,6 +28,7 @@
       }
     }},
     {"name": "type", "type": {"type": "enum", "name": "type_enum", "symbols": ["A", "B", "C"]}},
-    {"name": "md5", "type": ["null", {"type": "fixed", "name": "md5_value", "size": 32}]}
+    {"name": "md5", "type": ["null", {"type": "fixed", "name": "md5_value", "size": 32}]},
+    {"name": "flag", "type": "boolean"}
   ]
 }
