@@ -206,6 +206,11 @@ public class AvroFormatterPlugin
             public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
                 return CodecFactory.bzip2Codec();
             }
+        },
+        ZSTANDARD {
+            public CodecFactory getCodecFactory(Optional<Integer> compressionLevel) {
+                return CodecFactory.zstandardCodec(compressionLevel.or(CodecFactory.DEFAULT_ZSTANDARD_LEVEL));
+            }
         };
 
         @JsonValue
@@ -227,6 +232,8 @@ public class AvroFormatterPlugin
                     return SNAPPY;
                 case "bzip2":
                     return BZIP2;
+                case "zstandard":
+                    return ZSTANDARD;
                 default:
                     throw new ConfigException(String.format("Unknown mode '%s'. Supported modes are single_column, multi_column", name));
             }

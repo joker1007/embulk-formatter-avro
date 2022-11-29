@@ -1,9 +1,9 @@
 package org.embulk.formatter.avro.converter;
 
-import avro.shaded.com.google.common.collect.ImmutableMap;
 import org.apache.avro.Schema;
 import org.msgpack.value.Value;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class AvroMapConverter extends AbstractAvroValueConverter {
@@ -21,32 +21,32 @@ public class AvroMapConverter extends AbstractAvroValueConverter {
 
         Map<Value, Value> map = value.asMapValue().map();
 
-        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
+        Map<String, Object> converted = new HashMap();
 
         for (Map.Entry<Value, Value> entry : map.entrySet()) {
             switch (entry.getValue().getValueType()) {
                 case STRING:
-                    builder.put(entry.getKey().toString(), elementConverter.stringColumn(entry.getValue().asStringValue().toString()));
+                    converted.put(entry.getKey().toString(), elementConverter.stringColumn(entry.getValue().asStringValue().toString()));
                     break;
                 case INTEGER:
-                    builder.put(entry.getKey().toString(), elementConverter.longColumn(entry.getValue().asIntegerValue().toLong()));
+                    converted.put(entry.getKey().toString(), elementConverter.longColumn(entry.getValue().asIntegerValue().toLong()));
                     break;
                 case FLOAT:
-                    builder.put(entry.getKey().toString(), elementConverter.doubleColumn(entry.getValue().asFloatValue().toDouble()));
+                    converted.put(entry.getKey().toString(), elementConverter.doubleColumn(entry.getValue().asFloatValue().toDouble()));
                     break;
                 case BOOLEAN:
-                    builder.put(entry.getKey().toString(), elementConverter.booleanColumn(entry.getValue().asBooleanValue().getBoolean()));
+                    converted.put(entry.getKey().toString(), elementConverter.booleanColumn(entry.getValue().asBooleanValue().getBoolean()));
                     break;
                 case ARRAY:
-                    builder.put(entry.getKey().toString(), elementConverter.jsonColumn(entry.getValue().asArrayValue()));
+                    converted.put(entry.getKey().toString(), elementConverter.jsonColumn(entry.getValue().asArrayValue()));
                     break;
                 case MAP:
-                    builder.put(entry.getKey().toString(), elementConverter.jsonColumn(entry.getValue().asMapValue()));
+                    converted.put(entry.getKey().toString(), elementConverter.jsonColumn(entry.getValue().asMapValue()));
                     break;
                 default:
                     throw new RuntimeException("Irregular Messagepack type");
             }
         }
-        return builder.build();
+        return converted;
     }
 }
